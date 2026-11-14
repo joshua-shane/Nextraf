@@ -15,8 +15,10 @@ are written in deployment mode - never footage.
 | Vehicle counts by class | Done, run on images and a real video |
 | IoU tracker, stationary timer, road-line footprint check, potential-violation alerts | Done, unit-tested + synthetic clip. **Not validated on real fixed-camera footage** |
 | Combined app + frontend output (`run_nextraf.py`) | Done (contract below) |
+| Backup model YOLO11n, exported fp32 `.pte` (640 and 1280), runs in the same pipeline | Done, tested on laptop CPU (not in the Pi ZIP) |
+| MAE evaluation tool (`eval_crowd_mae.py`) | Done, tested with dummy counts only. **No real MAE yet** - needs hand counts |
 | Raspberry Pi 5 deployment and benchmarks | **Not done** |
-| INT8 export, fine-tuning on Indian data, MAE vs hand-counted ground truth | **Not done** |
+| INT8 export, fine-tuning on Indian data | **Not done** |
 
 ## Setup (Windows, already done on the dev laptop)
 
@@ -29,6 +31,18 @@ For the 1280 model: copy `yolo26n.pt` to `yolo26n_1280.pt` first (so the 640 exp
 overwritten), then export with `imgsz=1280`. **Windows only:** if export fails with
 `FileNotFoundError: [WinError 2]` from `flatc`, ExecuTorch cannot find its bundled flatc - run
 `$env:FLATC_EXECUTABLE = "$PWD\.venv\Lib\site-packages\executorch\data\bin\flatc.exe"` first.
+
+### Backup model: YOLO11n
+YOLO26n is the default. YOLO11n (listed in the original proposal) is kept as a backup; it uses
+the same COCO class IDs, so no code changes are needed. Create the exports the same way:
+```powershell
+.venv\Scripts\yolo.exe export model=yolo11n.pt format=executorch imgsz=640
+copy yolo11n.pt yolo11n_1280.pt
+.venv\Scripts\yolo.exe export model=yolo11n_1280.pt format=executorch imgsz=1280
+```
+(`yolo11n.pt` downloads automatically from Ultralytics on first use.) To switch, pass
+`--model yolo11n_1280_executorch_model --imgsz 1280` (or `yolo11n_executorch_model` with
+`--imgsz 640`) to any `run_*.py`.
 
 ## Running
 
@@ -46,6 +60,26 @@ and alerts only. Parking needs a video from a **fixed** camera; single images gi
 (real ground area in m^2, or null - pixel area is never used as m^2). Road config keys: `p1`, `p2`,
 `allowed_point`, `frame_size`, `park_seconds` (default 5), `encroach` (default 0.15).
 
+## Crowd-count accuracy (MAE)
+
+`eval_crowd_mae.py` compares the model's per-frame people count with counts you make by hand.
+1. Run `run_crowd.py` on a clip, then create a counting template (10-20 evenly spaced frames,
+   saved as plain images without model boxes, plus a CSV with an empty `gt_people` column):
+   ```powershell
+   .venv\Scripts\python.exe eval_crowd_mae.py template --pred out\<run>\crowd_counts.csv --source <clip> --n 15 --out out\eval\<name>
+   ```
+2. Count the people in each image (same rule as the model: everyone whose feet are inside the
+   ROI; with no ROI, every visible person) and type the numbers into `gt_people`.
+3. Evaluate:
+   ```powershell
+   .venv\Scripts\python.exe eval_crowd_mae.py evaluate --pred out\<run>\crowd_counts.csv --gt out\eval\<name>\ground_truth.csv --out out\eval\<name>
+   ```
+Rows match on `source` + `frame` (the original video frame index), or `frame` only for
+`run_nextraf.py`'s `frames.csv`. It reports MAE, mean signed error (negative = undercount), max
+error, % of frames within +-1 and a per-frame table (`mae_results.csv`, `mae_summary.json`).
+Empty, invalid, duplicate and unmatched rows are labelled and excluded; with no valid counts it
+prints "MAE NOT COMPUTED" instead of a number.
+
 ## Findings so far (laptop CPU, i7-13650HX; not Raspberry Pi numbers)
 
 - `bus.jpg`: 4/4 people and the bus found (exported model). A partly visible person scored 0.56,
@@ -60,6 +94,10 @@ and alerts only. Parking needs a video from a **fixed** camera; single images gi
   Resolution vs cost is the main crowd-accuracy lever.
 - Steady latency at 640: ~105-110 ms/frame (~9 FPS), RAM ~410-420 MB; first frame adds 2.5-5 s
   ExecuTorch warm-up. Single-run timings vary; benchmark on the Pi with many frames.
+- YOLO26n vs YOLO11n (exported `.pte`, conf 0.4): similar laptop latency (640: ~125 vs ~119 ms;
+  1280: ~220 vs ~214 ms on `street.jpg`). YOLO11n reports somewhat more objects on the street
+  images, but without ground truth that is **not** evidence of better accuracy. At 1280 both
+  models missed the bus in `bus.jpg` that they find at 640 (the bus fills most of the frame).
 
 ## Media credits (test inputs, not committed)
 
@@ -68,8 +106,8 @@ and alerts only. Parking needs a video from a **fixed** camera; single images gi
 - `hyderabad_480p.webm` - "Traffic in Hyderabad" (480p transcode), Oleg Yunakov, Wikimedia Commons, CC BY-SA 4.0.
 - `bus.jpg` - Ultralytics sample image.
 
-Model: YOLO26n by Ultralytics, AGPL-3.0. Model approval: the original proposal lists
-SSDLite320-MobileNetV3 / YOLO11n; using YOLO26n needs organiser confirmation.
+Models: YOLO26n (default) and YOLO11n (backup) by Ultralytics, AGPL-3.0. Model approval: the
+original proposal lists SSDLite320-MobileNetV3 / YOLO11n; using YOLO26n needs organiser confirmation.
 
 ---
 
