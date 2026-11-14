@@ -1,0 +1,30 @@
+# NEXTRAF - Raspberry Pi 5 (64-bit Raspberry Pi OS, aarch64) requirements
+#
+# STATUS: NOT TESTED ON A RASPBERRY PI. Versions match the Windows environment the code was
+# tested in (Python 3.13.3). That every package below has an aarch64 Linux wheel was checked
+# against PyPI / the PyTorch CPU index metadata, but nothing was installed or run on ARM.
+#
+# Install inside a virtual environment (see DEPLOYMENT_GUIDE.md):
+#     pip install --upgrade pip
+#     pip install -r requirements-pi.txt
+#
+# IMPORTANT - torch/torchvision: the PyPI "torch" 2.15.0 metadata declares NVIDIA CUDA packages
+# for ANY Linux machine, so a plain `pip install torch` on a Pi can try to download gigabytes of
+# CUDA libraries it cannot use. The "+cpu" pins below can only come from the PyTorch CPU index
+# given on the next line, which keeps the install CPU-only.
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+torch==2.15.0+cpu
+torchvision==0.29.2+cpu
+executorch==1.6.0          # ExecuTorch runtime; must be >= the version that exported the .pte (1.6.0)
+ultralytics==8.4.212       # loads the *_executorch_model folders; pure Python
+opencv-python==5.0.0.93    # ultralytics requires opencv-python; needs `libgl1` from apt on Pi OS Lite
+psutil==7.2.2
+
+# numpy 2.5.4 needs Python >= 3.12. On Python 3.11 (Raspberry Pi OS Bookworm) it cannot install,
+# so pip is left to choose a numpy - that combination is UNTESTED.
+numpy==2.5.4; python_version >= "3.12"
+numpy; python_version < "3.12"
+
+# Deliberately NOT included (Windows/dev-only or unused at runtime): onnx*, tensorflow, coremltools,
+# openvino, tensorrt, any CUDA/nvidia packages, pytest, jupyter.

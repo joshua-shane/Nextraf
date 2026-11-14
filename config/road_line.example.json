@@ -1,0 +1,10 @@
+{
+  "_comment": "EXAMPLE VALUES ONLY (for a 1040x780 test image). Redraw for your camera with draw_road_line.py and save as config/road_line.json.",
+  "site": "example-site",
+  "p1": [560, 180],
+  "p2": [600, 780],
+  "allowed_point": [300, 500],
+  "frame_size": [1040, 780],
+  "park_seconds": 5.0,
+  "encroach": 0.15
+}

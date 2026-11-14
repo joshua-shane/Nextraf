@@ -1,0 +1,33 @@
+NEXTRAF_RaspberryPi5_Package - PACKAGE MANIFEST
+Built: 2026-11-14 13:44:09 on Windows 11 (x64). Raspberry Pi 5 deployment: NOT TESTED.
+Rebuild of the 13:17:26 package: added HANDOVER.md (git 0c6d89c) and pi_smoke_test.py;
+DEPLOYMENT_GUIDE.md / README.md updated to reference them and the aarch64 dry-run result.
+Source code and models are unchanged and byte-identical to git commit 0c6d89c / the project models.
+Excluded on purpose: .venv, *.pt weights, runs/, out/, sample images/videos, .git, __pycache__, secrets.
+
+FILE                                                     BYTES  SHA-256 (first 16)  PURPOSE
+DEPLOYMENT_GUIDE.md                                      10569  5aebd87371793b6d    Raspberry Pi 5 setup, model path, input, launch commands, troubleshooting
+FRONTEND_SCHEMA.md                                        4959  cd608b81012a81fb    JSON/CSV output contract for the dashboard (schema_version 1) with real samples
+HANDOVER.md                                               3434  1660979be6deb7c8    Team handover notes (Pi + frontend), copied from git commit 0c6d89c
+README.md                                                 2789  10216b749c22487a    Package overview, status/limitations, quick start
+config/crowd_site.json                                     102  b9ecc7de623c8fc1    Crowd site config (capacity 10, warn_ratio 0.8; PLACEHOLDER values)
+config/road_line.example.json                              319  452032931ab02eb3    Example road-line config (PLACEHOLDER values; redraw per camera)
+draw_road_line.py                                         2079  cb9b822652f7cc26    OpenCV tool: mark the road-edge line + allowed side (needs a display)
+draw_roi.py                                               1619  a02f0a8dbc94cfc8    OpenCV tool: draw the crowd ROI polygon (needs a display)
+nextraf/__init__.py                                         65  68beeea30bc56377    Package marker
+nextraf/crowd.py                                          3917  cbade61476313751    Crowd analysis: ROI test on foot point, capacity status, drawing
+nextraf/detector.py                                       1685  d9c06104e61d64f8    Shared YOLO26n/ExecuTorch detector wrapper (loads the model folder)
+nextraf/sources.py                                        1369  ff03dc45ed1892e7    Frame input: image, folder of images, video file (no camera/RTSP)
+nextraf/vehicles.py                                       8587  f843e510083b354d    Vehicle analysis: counts, IoU tracker, stationary time, parking check, drawing
+pi_smoke_test.py                                          5208  ec70fe2e5ffc1c22    QUICK MODEL TEST - run first on the Pi: platform, imports, XNNPACK backend, both models
+requirements-pi.txt                                       1641  2054ff78ef9e6f99    Python dependencies for Raspberry Pi 5 / aarch64 (CPU-only torch pins)
+run_crowd.py                                              4221  5efd8e6d70b21f17    Crowd module on its own (people count, ROI, capacity alerts)
+run_nextraf.py                                            8506  0054b325a6528344    MAIN entry point: crowd + vehicles + parking in one pass, unified outputs
+run_vehicles.py                                           4950  1cd99ce3dc375254    Vehicle module on its own (counts, IoU tracking, parking check)
+yolo26n_1280_executorch_model/metadata.yaml               1643  f255d3c3a422f46d    Model metadata read by Ultralytics (imgsz 1280, class names)
+yolo26n_1280_executorch_model/model.pte               10159808  18230e8b291f9535    RECOMMENDED model: YOLO26n, ExecuTorch, XNNPACK, 1280x1280 input
+yolo26n_executorch_model/metadata.yaml                    1641  4f14348891d753a9    Model metadata for the 640 model
+yolo26n_executorch_model/model.pte                     9857344  9eed1a075e7bc6fd    Fallback model: YOLO26n, ExecuTorch, 640x640 input (faster, less accurate)
+PACKAGE_MANIFEST.txt                                         -  -                   This file
+
+Total: 23 files.
