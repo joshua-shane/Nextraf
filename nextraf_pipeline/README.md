@@ -16,10 +16,12 @@ Validation screens.
 
 ## Setup
 
-Use the same environment as `run_nextraf.py`. These tools only add pandas:
+Install into the environment that already runs `run_nextraf.py`. On the Pi that is the one set up from
+`requirements-pi.txt` in the package ([HANDOVER.md](../HANDOVER.md)), never the repo's `requirements.txt`. These
+tools only add pandas:
 
-```powershell
-.venv\Scripts\pip install -r nextraf_pipeline\requirements.txt
+```bash
+pip install -r nextraf_pipeline/requirements.txt
 ```
 
 ## Run on the Pi
