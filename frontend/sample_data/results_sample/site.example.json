@@ -1,0 +1,90 @@
+{
+  "site_name": "Example Primary School – main gate",
+  "region": "IN",
+  "area_m2": 20.0,
+  "area_is_assumed": true,
+  "time_window": "15:30–16:15",
+  "camera_note": "Synthetic sample data. Fixed webcam, 3 m high, facing the gate (assumed)",
+  "los_bands": [
+    {
+      "name": "PLACEHOLDER A (best)",
+      "min_m2_per_person": 5.0,
+      "max_m2_per_person": null,
+      "color": "#cfe8f3"
+    },
+    {
+      "name": "PLACEHOLDER B",
+      "min_m2_per_person": 4.0,
+      "max_m2_per_person": 5.0,
+      "color": "#a3d3e0"
+    },
+    {
+      "name": "PLACEHOLDER C",
+      "min_m2_per_person": 3.0,
+      "max_m2_per_person": 4.0,
+      "color": "#f3e3a0"
+    },
+    {
+      "name": "PLACEHOLDER D",
+      "min_m2_per_person": 2.0,
+      "max_m2_per_person": 3.0,
+      "color": "#f2c27a"
+    },
+    {
+      "name": "PLACEHOLDER E",
+      "min_m2_per_person": 1.0,
+      "max_m2_per_person": 2.0,
+      "color": "#e8955f"
+    },
+    {
+      "name": "PLACEHOLDER F (worst)",
+      "min_m2_per_person": 0.0,
+      "max_m2_per_person": 1.0,
+      "color": "#c8553d"
+    }
+  ],
+  "los_bands_are_placeholders": true,
+  "vehicle_footprint_m2": {
+    "two_wheeler": 1.5,
+    "car": 7.0
+  },
+  "surge": {
+    "warn_density_ppm2": 1.2,
+    "warn_rise_ppm2_per_min": 0.05,
+    "critical_density_ppm2": 4.0,
+    "window_frames": 5
+  },
+  "conflict": {
+    "min_people": 15,
+    "min_vehicles": 5
+  },
+  "adaptive": {
+    "fast_config_id": "yolo26n_int8_320_t0.5",
+    "accurate_config_id": "yolo26n_fp32_640_t0.5",
+    "switch_count": 15
+  },
+  "hardware": {
+    "os_overhead_mb": 350,
+    "headroom_fraction": 0.2,
+    "currency": "INR",
+    "boards": [
+      {
+        "ram_gb": 1,
+        "price": 5044
+      },
+      {
+        "ram_gb": 2,
+        "price": 7869
+      },
+      {
+        "ram_gb": 4,
+        "price": 13409
+      },
+      {
+        "ram_gb": 8,
+        "price": 19999
+      }
+    ],
+    "prices_note": "Example retail prices, Robocraze India, Nov 2026 – edit as needed"
+  }
+}

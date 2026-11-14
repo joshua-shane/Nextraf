@@ -1,0 +1,8 @@
+{
+  "board": "Raspberry Pi 5 (sample)",
+  "ram_gb": 4,
+  "os": "Raspberry Pi OS 64-bit (sample)",
+  "executorch_version": "placeholder",
+  "cooler": true,
+  "threads": 4
+}

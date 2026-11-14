@@ -17,6 +17,8 @@ are written in deployment mode - never footage.
 | Combined app + frontend output (`run_nextraf.py`) | Done (contract below) |
 | Backup model YOLO11n, exported fp32 `.pte` (640 and 1280), runs in the same pipeline | Done, tested on laptop CPU (not in the Pi ZIP) |
 | MAE evaluation tool (`eval_crowd_mae.py`) | Done, tested with dummy counts only. **No real MAE yet** - needs hand counts |
+| Results viewer (`frontend/`): opens `run_nextraf.py` output, 9 screens, offline site report | Done, 175 tests; [live demo](https://nextraf-frontend.vercel.app) with synthetic data |
+| Benchmark and parity tools (`nextraf_pipeline/`): temperature, throttling, peak memory, MAE per configuration | Done, tested on laptop CPU with `yolo11n.pt`. **Not run on the Pi yet** |
 | Raspberry Pi 5 deployment and benchmarks | **Not done** |
 | INT8 export, fine-tuning on Indian data | **Not done** |
 
@@ -59,6 +61,37 @@ and alerts only. Parking needs a video from a **fixed** camera; single images gi
 `config\crowd_site.json` keys: `site`, `roi` (polygon or null), `capacity`, `warn_ratio`, `area_m2`
 (real ground area in m^2, or null - pixel area is never used as m^2). Road config keys: `p1`, `p2`,
 `allowed_point`, `frame_size`, `park_seconds` (default 5), `encroach` (default 0.15).
+
+## Results viewer
+
+`frontend/` is an offline Streamlit app that opens a `run_nextraf.py` output folder: people and vehicles over
+time, crowding verdict, replay, validation images, device numbers and a one-page site report. It has its own
+environment (run it on a laptop, not on the Pi while benchmarking):
+
+```powershell
+python -m venv .venv-viewer
+.venv-viewer\Scripts\pip install -r frontend\requirements.txt
+.venv-viewer\Scripts\streamlit run frontend\app.py -- --results-dir out\demo
+```
+Details in [frontend/README.md](frontend/README.md). How it maps `frames.csv` and `summary.json` is in
+[docs/DATA_CONTRACT.md](docs/DATA_CONTRACT.md).
+
+## Benchmark and parity tools
+
+`nextraf_pipeline/` measures the pipeline on the Pi: ExecuTorch against PyTorch parity, and latency, peak memory,
+temperature, throttling and MAE for every model, input size and threshold. Its files feed the viewer's
+Affordability envelope and Validation screens. See [nextraf_pipeline/README.md](nextraf_pipeline/README.md).
+
+## Repository layout
+
+| Path | What it is |
+|---|---|
+| `nextraf/`, `run_nextraf.py`, `run_crowd.py`, `run_vehicles.py`, `draw_*.py`, `config/` | The pipeline (detection, crowd, vehicles) |
+| `eval_crowd_mae.py` | MAE against hand counts for one run |
+| `frontend/` | Results viewer (Streamlit) and its tests |
+| `nextraf_pipeline/` | Benchmark and parity tools |
+| `nextraf_common/` | Hash-chained CSV log shared by `nextraf_pipeline/` and the viewer |
+| `docs/DATA_CONTRACT.md` | Every file the viewer reads |
 
 ## Crowd-count accuracy (MAE)
 
