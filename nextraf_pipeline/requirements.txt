@@ -1,4 +1,4 @@
-# Benchmark and parity tools. Use the same environment as run_nextraf.py (ultralytics, executorch, OpenCV, psutil),
-# plus pandas for the result tables.
--r ../requirements.txt
-pandas==3.1.1
+# Benchmark and parity tools. Install into the environment that already runs run_nextraf.py; on the Pi that is the
+# one set up from requirements-pi.txt in the package (see HANDOVER.md), never the repo's requirements.txt.
+# The tools only add pandas for the result tables.
+pandas>=2.2
