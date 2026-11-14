@@ -5,22 +5,18 @@
 **Goal:** run `run_nextraf.py` offline on the Pi 5 and measure real performance. Nothing has
 been run on a Pi yet - every number in the README is from a laptop.
 
-1. **OS:** Raspberry Pi OS 64-bit (aarch64). Check the Python version with `python3 --version`.
-2. **Copy from the laptop** (USB stick or `scp`):
-   - `nextraf\`, `run_nextraf.py`, `run_crowd.py`, `run_vehicles.py`, `requirements.txt`, `config\`
-   - `yolo26n_executorch_model\` (640) and, if testing it, `yolo26n_1280_executorch_model\` (1280)
-   - a test clip (for example `hyderabad_480p.webm`, or a clip from a fixed camera)
-3. **Environment on the Pi:**
-   ```bash
-   python3 -m venv .venv && source .venv/bin/activate
-   pip install -r requirements.txt
-   ```
-   - Not yet verified: that `executorch==1.6.0` and `torch==2.15.0` install on the Pi's Python
-     version. If pip cannot find them, report the exact error - do not change versions blindly,
-     because the `.pte` files were exported with these versions.
-   - On a Pi without a screen, `opencv-python-headless` can replace `opencv-python`.
-   - The `FLATC_EXECUTABLE` fix in the README is for **exporting on Windows** only; it is not
-     needed to run inference.
+1. **Use the package, not the git repo:** copy `NEXTRAF_RaspberryPi5_Package.zip` (on the dev
+   laptop, not in git - it contains both `.pte` models) to the Pi and follow its
+   `DEPLOYMENT_GUIDE.md`. Its code is byte-identical to commit `5dce800`.
+2. **Install with `requirements-pi.txt` from the package - never the repo's `requirements.txt`.**
+   On Linux, plain PyPI torch pulls gigabytes of CUDA packages; `requirements-pi.txt` pins the
+   CPU-only `torch==2.15.0+cpu` from the PyTorch CPU index. Linux ARM64 wheels exist for every
+   pin on Python 3.11-3.13 (checked from index metadata, not installed). numpy 2.5.4 needs
+   Python 3.12+, so prefer a Raspberry Pi OS with Python 3.12 or newer.
+3. **Main unverified risk:** whether the ARM64 ExecuTorch runtime loads these XNNPACK `.pte`
+   files. Run the guide's smoke test first and report the full error if it fails. The
+   `FLATC_EXECUTABLE` fix in the README is for exporting on Windows only.
+   Also bring a test clip (for example `hyderabad_480p.webm`, or a clip from a fixed camera).
 4. **Draw the ROI and road line on the laptop** (`draw_roi.py`, `draw_road_line.py` open a
    window), using a frame from the Pi camera, then copy the JSON files into `config/` on the Pi.
 5. **Benchmark run:**
