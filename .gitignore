@@ -30,3 +30,12 @@ runs/
 *.pem
 credentials*
 secrets*
+
+# Results viewer (frontend/) and benchmark tools
+venv/
+.venv-viewer/
+.pytest_cache/
+.DS_Store
+*.mkv
+results/
+.vercel/

@@ -1,0 +1,35 @@
+[browser]
+gatherUsageStats = false
+
+[server]
+headless = true
+maxUploadSize = 20
+
+[client]
+# Hide developer-only items such as the Deploy button; viewers keep print and settings.
+toolbarMode = "viewer"
+
+[theme]
+base = "light"
+primaryColor = "#0A4DA2"
+backgroundColor = "#F2F5F9"
+secondaryBackgroundColor = "#E6EDF5"
+textColor = "#102A43"
+borderColor = "#D6DFEA"
+linkColor = "#0A4DA2"
+baseRadius = "0.45rem"
+buttonRadius = "0.45rem"
+font = "sans-serif"
+# Bahnschrift is DIN, the road-sign face (ships with Windows); DIN Alternate ships with macOS; else Source Sans.
+headingFont = "Bahnschrift, DIN Alternate, sans-serif"
+headingFontWeights = [600, 600, 600, 600, 600, 600]
+headingFontSizes = ["2.25rem", "1.75rem", "1.45rem", "1.15rem", "1rem", "0.9rem"]
+metricValueFontSize = "1.9rem"
+dataframeHeaderBackgroundColor = "#EEF3F9"
+
+[theme.sidebar]
+backgroundColor = "#0B2545"
+secondaryBackgroundColor = "#16355F"
+textColor = "#FFFFFF"
+primaryColor = "#8CC8FF"
+borderColor = "#2B4A74"
