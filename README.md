@@ -20,6 +20,24 @@ are written in deployment mode - never footage.
 | Raspberry Pi 5 deployment and benchmarks | **Not done** |
 | INT8 export, fine-tuning on Indian data | **Not done** |
 
+## Repository layout
+
+| Path | Contents |
+|---|---|
+| `nextraf/` | package: `detector.py` (shared YOLO26n/ExecuTorch wrapper), `sources.py`, `crowd.py`, `vehicles.py` |
+| `run_nextraf.py`, `run_crowd.py`, `run_vehicles.py` | entry points (combined pipeline, crowd only, vehicles/parking only) |
+| `draw_roi.py`, `draw_road_line.py` | one-time ROI and road-edge line tools |
+| `eval_crowd_mae.py` | crowd-count MAE evaluation |
+| `config/` | `crowd_site.json`, `road_line.example.json` (placeholder values) |
+| `deploy/raspberry_pi/` | Raspberry Pi 5 package docs and sources: `DEPLOYMENT_GUIDE.md`, `requirements-pi.txt`, `pi_smoke_test.py`, package `README.md`, `PACKAGE_MANIFEST.txt` |
+| `docs/FRONTEND_SCHEMA.md` | frontend data contract (schema_version 1) |
+
+`NEXTRAF_RaspberryPi5_Package.zip` is built on the dev laptop and is **not** in git (it contains
+the `.pte` models). Its code is byte-identical to commit `0c6d89c`; the files in
+`deploy/raspberry_pi/`, `config/road_line.example.json` and `docs/FRONTEND_SCHEMA.md` are
+byte-identical copies of the files in the package. `pi_smoke_test.py` expects the package layout
+(model folders beside it), so run it from the extracted package folder.
+
 ## Setup (Windows, already done on the dev laptop)
 
 ```powershell
