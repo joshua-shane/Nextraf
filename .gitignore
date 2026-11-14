@@ -1,0 +1,32 @@
+# Environment
+.venv/
+__pycache__/
+*.pyc
+
+# Model weights and exports (large, reproducible)
+*.pt
+*.pte
+*.onnx
+*_executorch_model/
+
+# Generated outputs and ultralytics runs
+out/
+runs/
+*.tmp
+
+# Test media / datasets (keep inputs out of git)
+/*.jpg
+/*.png
+*.mp4
+*.avi
+*.mov
+*.webm
+*.zip
+
+# Secrets
+.env
+.env.*
+*.key
+*.pem
+credentials*
+secrets*
